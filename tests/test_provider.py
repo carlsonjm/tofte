@@ -37,6 +37,16 @@ class Provider(unittest.TestCase):
         self.assertEqual(got["people"][0]["summary"], "1 number · 1 address")
         self.assertEqual(got["people"][0]["initials"], "AR")
 
+    def test_a_long_list_is_never_cut_short(self):
+        folder = Path(self.home.name) / "kpeoplevcard" / "kdeconnect-test"
+        for n in range(300):
+            (folder / f"many{n}.vcf").write_text(
+                "BEGIN:VCARD\nVERSION:2.1\nFN:Person %03d\nTEL;CELL:612-556-%04d\nEND:VCARD\n" % (n, n))
+        got = provider.answer(["people"])
+        self.assertEqual(got["count"], 304)
+        self.assertEqual(len(got["people"]), 304)
+        self.assertEqual(got["people"][-1]["name"], "Person 299")
+
     def test_words_find_by_name_start_number_and_address(self):
         names = lambda *a: [p["name"] for p in provider.answer(["people", *a])["people"]]
         self.assertEqual(names("an"), ["Ana Reyes", "Ana Reyes"])

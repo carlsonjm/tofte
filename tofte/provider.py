@@ -91,7 +91,9 @@ def row(res: Result, n: int) -> dict:
             "initials": initials(p.name), "summary": summary(p)}
 
 
-def people(res: Result, words: str, limit: int = 60) -> dict:
+def people(res: Result, words: str) -> dict:
+    """Everyone the words find, by name; with no words, everyone. Never cut short:
+    the list is the whole address book, and a person missing from it is lost."""
     want = tokens(words)
     digits = "".join(c for c in words if c.isdigit())
     found = []
@@ -110,7 +112,7 @@ def people(res: Result, words: str, limit: int = 60) -> dict:
             first = 0
         found.append((first, (p.name or "￿").casefold(), n))
     found.sort()
-    return {"count": len(res.people), "found": len(found), "people": [row(res, n) for _, _, n in found[:limit]]}
+    return {"count": len(res.people), "found": len(found), "people": [row(res, n) for _, _, n in found]}
 
 
 def person(res: Result, ident: str) -> dict:
