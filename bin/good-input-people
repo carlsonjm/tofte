@@ -1,0 +1,4 @@
+#!/bin/sh
+# What a desktop search runs to ask about people; see tofte/provider.py.
+here="$(dirname "$(readlink -f "$0")")"
+exec env PYTHONPATH="$here/..${PYTHONPATH:+:$PYTHONPATH}" python3 -m tofte.provider "$@"
