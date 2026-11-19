@@ -5,6 +5,8 @@
     join ID OTHER       these two are one person from now on
     not-same ID OTHER   they are not, and it is not asked again
     separate ID         take a joined person apart again
+    choices             how many contacts, and what the user has decided
+    start-over          forget every decision; people are as the cards say
 
 The contact cards are read from KDE Connect's folder each time, and what the
 user decided is kept beside them in decisions.json, by handle, so the people
@@ -173,12 +175,28 @@ def decide(res: Result, d: Decisions, verb: str, ident: str, other: str = "") ->
     return person(again, ident)
 
 
+def choices(res: Result, d: Decisions) -> dict:
+    """For a settings page: the contacts read, and how many decisions are kept."""
+    return {"cards": len(res.records), "people": len(res.people),
+            "joined": len(d.joins), "apart": len(d.splits) + len(d.apart)}
+
+
+def start_over() -> dict:
+    """Every join, "not the same" and separation forgotten, so the people
+    are rebuilt from the cards alone."""
+    d = Decisions()
+    save(d)
+    return choices(resolve(read_folder(cards_folder()), d), d)
+
+
 def agree_pair(x: str, y: str, p: tuple[str, str]) -> bool:
     return (p[0] == x and p[1] == y) or (p[0] == y and p[1] == x)
 
 
 def answer(args: list[str]) -> dict:
     verb = args[0] if args else "people"
+    if verb == "start-over" and len(args) == 1:
+        return start_over()
     d = load()
     res = resolve(read_folder(cards_folder()), d)
     if verb == "people":
@@ -189,6 +207,8 @@ def answer(args: list[str]) -> dict:
         return decide(res, d, verb, args[1], args[2])
     if verb == "separate" and len(args) == 2:
         return decide(res, d, verb, args[1])
+    if verb == "choices" and len(args) == 1:
+        return choices(res, d)
     return {"error": "usage"}
 
 

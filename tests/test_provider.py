@@ -81,6 +81,20 @@ class Provider(unittest.TestCase):
         self.assertIsNone(provider.answer(["person", "3"])["match"])
         self.assertEqual(provider.answer(["people"])["count"], 4)
 
+    def test_choices_count_then_start_over_forgets_them(self):
+        got = provider.answer(["choices"])
+        self.assertEqual((got["cards"], got["joined"], got["apart"]), (5, 0, 0))
+        ana = provider.answer(["people", "ana"])["people"]
+        provider.answer(["join", ana[0]["id"], ana[1]["id"]])
+        ben = provider.answer(["people", "ben"])["people"][0]["id"]
+        joanna = provider.answer(["people", "joanna"])["people"][0]["id"]
+        provider.answer(["not-same", ben, joanna])
+        got = provider.answer(["choices"])
+        self.assertEqual((got["joined"], got["apart"], got["people"]), (1, 1, 3))
+        got = provider.answer(["start-over"])
+        self.assertEqual((got["cards"], got["joined"], got["apart"], got["people"]), (5, 0, 0, 4))
+        self.assertEqual(provider.answer(["people"])["count"], 4)
+
     def test_unreadable_decisions_start_empty(self):
         provider.decisions_file().parent.mkdir(parents=True)
         provider.decisions_file().write_text("{nonsense")

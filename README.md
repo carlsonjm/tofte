@@ -13,8 +13,8 @@ sources say into people, and a small command a desktop search can ask.
   that differently named cards share joins nobody. Joins and splits made by
   hand always win and are kept by handle, so the people can be rebuilt from
   the sources at any time.
-- `tofte/provider.py` answers `people`, `person`, `join`, `not-same` and
-  `separate` as JSON. `bin/good-input-people` runs it.
+- `tofte/provider.py` answers `people`, `person`, `join`, `not-same`,
+  `separate`, `choices` and `start-over` as JSON. `bin/good-input-people` runs it.
 - `tofte/report.py` writes a page of who was joined and why:
   `python3 -m tofte CONTACTS_FOLDER REPORT.html`. The page holds real names
   and stays on the computer it was made on.
