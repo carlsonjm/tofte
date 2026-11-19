@@ -28,3 +28,7 @@ KDE Connect copies from a paired phone to `~/.local/share/kpeoplevcard`.
     PYTHONPATH=. python3 tests/test_provider.py
 
 The tests use made-up people only.
+
+## Licence
+
+GPL-2.0-or-later, as the rest of the Good Input suite. See `LICENSE`.
